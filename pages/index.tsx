@@ -2,8 +2,23 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
+import { analytics } from '../lib/firebase';
+import { logEvent } from 'firebase/analytics';
 
 const Home: NextPage = () => {
+  const handleExampleButtonClick = async () => {
+    const analyticsInstance = await analytics;
+    if (analyticsInstance) {
+      logEvent(analyticsInstance, 'button_click', {
+        button_name: 'example_custom_event_button',
+        timestamp: new Date().toISOString(),
+      });
+      alert('Custom event logged! Check your Firebase Analytics console.');
+    } else {
+      alert('Analytics not available.');
+    }
+  };
+
   return (
     <div className={styles.container}>
       <Head>
@@ -51,6 +66,10 @@ const Home: NextPage = () => {
             </p>
           </a>
         </div>
+
+        <button onClick={handleExampleButtonClick} style={{ marginTop: '20px', padding: '10px 20px', fontSize: '16px', cursor: 'pointer' }}>
+          Log Custom Event
+        </button>
       </main>
 
       <footer className={styles.footer}>
